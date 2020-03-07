@@ -1,6 +1,6 @@
 open Js.Re;
 let re_num = [%bs.re "/[\d\.]+/"];
-let re_name = [%bs.re "/\w+/i"];
+let re_name = [%bs.re "/[a-zA-Z]/i"];
 let re_space_any = [%bs.re "/\s*/"];
 
 let is_num = test_(re_num);

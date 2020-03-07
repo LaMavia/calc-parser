@@ -8,6 +8,6 @@ let weight = op =>
     }
   );
 
-Lexer.tokenize("1.75 + 2.3 * (cos(5 + 3!)) ^ 2", "+-*/^_", "!")
+Lexer.tokenize("2_2", "+-*/^_", "!")
 ->Parser.parse(weight)
 ->Debugging.deep_log;

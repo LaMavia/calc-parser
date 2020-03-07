@@ -11,7 +11,7 @@ let insert = (tree, v) => {
   | N1(op, _) => N1(op, v)
   | N2(op, Empty, b) => N2(op, v, b)
   | N2(op, a, _) => N2(op, a, v)
-  | Empty => v
+  | Empty => N0(v)
   | a =>
     raise(
       Js.Exn.raiseError({j|Unmatched type of tree while inserting { $a }|j}),
