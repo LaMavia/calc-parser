@@ -38,10 +38,7 @@ let tokenize = (str, infixes, suffixes) => {
       | (a, Some(Number(n)), t) when is_num(a) =>
         next(Some(Number(n ++ a)), t)
       | (a, Some(Number(n)), t) when is_name(a) =>
-        next(
-          Some(Operator(Function(a))),
-          [Operator(Infix("*")), Number(n), ...t],
-        )
+        next(Some(Variable(a)), [Operator(Infix("*")), Number(n), ...t])
 
       // state: Function
       | (a, Some(Operator(Function(f))), t) when is_num(a) =>
