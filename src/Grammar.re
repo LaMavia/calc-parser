@@ -10,6 +10,7 @@ type bracket =
 type token =
   | Operator(operator)
   | Number(string)
+  | Variable(string)
   | Bracket(bracket);
 
 let weight = op =>

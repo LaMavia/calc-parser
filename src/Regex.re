@@ -36,3 +36,6 @@ module Make = {
     test_(re);
   };
 };
+
+/**matches: (name, variable, expression) */
+let re_function_exp = [%bs.re "/(?<name>\w+)\((?<var>\w)\)\s*=\s*(?<exp>.*)/"];

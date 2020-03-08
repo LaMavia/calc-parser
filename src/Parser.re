@@ -16,6 +16,8 @@ let parse = (tokens, weight: operator => int) => {
     | (None, ct) => ct
     // 0
     | (Some(Number(a)), ct) => loop(ct->Tree.insert(Number(a)))
+    // 0 var
+    | (Some(Variable(a)), ct) => loop(ct->Tree.insert(Variable(a)))
     // 1
     | (Some(Operator(Infix(op))), N0(old_val)) =>
       loop(N2(Infix(op), old_val, Empty))
@@ -69,3 +71,22 @@ let parse = (tokens, weight: operator => int) => {
   };
   loop(N0(Empty));
 };
+
+/**Finds the variables of a function expression
+ * ```reason
+ * ("f(a, b) = ....") == ["a", "b"]
+ * ```
+ */;
+/*
+ let variables_of_fx = tokens => {
+   let (_, vs) =
+     tokens->Belt.List.reduce((false, []), ((done_searching, acc), token) =>
+       switch (done_searching, token) {
+       | (false, Variable(v)) => (false, [v, ...acc])
+       | (false, Bracket(Close)) => (true, acc)
+       | _ => (done_searching, acc)
+       }
+     );
+
+   vs->List.rev;
+ };*/

@@ -24,7 +24,13 @@ let make = () => {
       inp
       ->Lexer.tokenize("+-*/^_", "!")
       ->Parser.parse(Grammar.weight)
-      ->Js.Console.log;
+      ->Evaluator.evaluate(
+          Belt.Map.make(~id=(module Evaluator.Closure)),
+          [||],
+        )
+      ->Js.String.make
+      ->Output
+      ->dispatch;
     }}>
     <p className="output"> outp->Helpers.str </p>
     <input value=inp type_="text" name="inp" id="inp" onChange />
