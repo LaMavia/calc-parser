@@ -1,0 +1,1 @@
+// let evaluate = (tree, functions)

@@ -48,11 +48,16 @@ let parse = (tokens, weight: operator => int) => {
       loop(ct->Tree.insert(loop(N0(Empty))))
     // 3.2
     | (Some(Bracket(Close)), ct) => ct
+    // 8
+    | (Some(Operator(Suffix(_) as op)), ct)
+        when weight_of_node(ct) <= weight_of_node(N1(op, N0(Empty))) =>
+      loop(N1(op, ct))
     // 5
     | (
         Some(Operator(Suffix(_) as op)),
         (N2(_, _, old_val) | N1(_, old_val) | N0(old_val)) as ct,
-      ) =>
+      )
+        when weight_of_node(ct) > weight_of_node(N1(op, Empty)) =>
       loop(ct->Tree.insert(N1(op, old_val)))
     // 7
     | (Some(Operator(Function(_) as f)), ct) =>

@@ -11,3 +11,11 @@ type token =
   | Operator(operator)
   | Number(string)
   | Bracket(bracket);
+
+let weight = op =>
+  switch (op) {
+  | Infix("+" | "-") => 0
+  | Infix("*" | "/") => 1
+  | Infix("^" | "_") => 2
+  | _ => 3
+  };
