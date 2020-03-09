@@ -1,12 +1,13 @@
-"2*f(5)"
+"e*R"
 ->Lexer.tokenize("+-*/^_", "!")
 ->Parser.parse(Grammar.weight)
 ->Evaluator.evaluate(
-    Belt.Map.make(~id=(module Evaluator.Closure)),
+    Function.global_scope,
     [|"f(x) = 2x! * 5"|]
     ->Belt.Array.map(Function.func_exp_of_string)
     ->Belt.Array.keepMap(x => Belt.Option.map(x, x => Function.UserFunc(x))),
-  );
+  )
+// ->Belt.List.toArray
 // ->Debugging.deep_log;
 
 // let cls = Belt.Map.make(~id=(module Closure));

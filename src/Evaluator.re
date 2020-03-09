@@ -1,9 +1,3 @@
-module Closure =
-  Belt.Id.MakeComparable({
-    type t = string;
-    let cmp: (t, t) => int = Pervasives.compare;
-  });
-
 let evaluate =
     (
       tree,
@@ -17,6 +11,7 @@ let evaluate =
 
   let rec calc = (node, scope) => {
     switch (node) {
+    | Empty => 0.
     | Number(n) => Js.Float.fromString(n)
     | Variable(v) =>
       switch (Belt.Map.get(scope, v)) {
@@ -45,16 +40,15 @@ let evaluate =
         raise(Js.Exn.raiseReferenceError({j|Function $f not found|j}))
       };
 
+    | N2(Infix(op), a, Empty) when Regex.is_sign(op) =>
+      Function.eval_op(op, ({eval: f, identity: i}) => {
+        f(i, calc(a, scope))
+      })
+
     | N2(Infix(op), a, b) =>
-      switch (Belt.Array.getBy(Function.operators, ({name}) => name == op)) {
-      | Some({eval: f}) => f(calc(a, scope), calc(b, scope))
-      | None =>
-        raise(
-          Js.Exn.raiseReferenceError(
-            {j|Operator ($op) is not defined in the current scope|j},
-          ),
-        )
-      }
+      Function.eval_op(op, ({eval: f}) =>
+        f(calc(a, scope), calc(b, scope))
+      )
 
     | _ =>
       raise(

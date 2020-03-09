@@ -8,6 +8,7 @@ type bracket =
   | Close;
 
 type token =
+  | Sign(string)
   | Operator(operator)
   | Number(string)
   | Variable(string)

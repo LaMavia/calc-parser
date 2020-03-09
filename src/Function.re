@@ -1,5 +1,11 @@
 open Tree;
 
+module Closure =
+  Belt.Id.MakeComparable({
+    type t = string;
+    let cmp: (t, t) => int = Pervasives.compare;
+  });
+
 type func_exp = {
   name: string,
   var: string,
@@ -45,16 +51,37 @@ let static_functions =
 type operator = {
   name: string,
   eval: (float, float) => float,
+  identity: float,
 };
 
 let operators = [|
-  {name: "+", eval: (+.)},
-  {name: "-", eval: (-.)},
-  {name: "*", eval: ( *. )},
-  {name: "/", eval: (/.)},
-  {name: "^", eval: ( ** )},
-  {name: "_", eval: (a, b) => b ** (1.0 /. a)},
+  {name: "+", identity: 0.0, eval: (+.)},
+  {name: "-", identity: 0.0, eval: (-.)},
+  {name: "*", identity: 1.0, eval: ( *. )},
+  {name: "/", identity: 1.0, eval: (/.)},
+  {name: "^", identity: 1.0, eval: ( ** )},
+  {name: "_", identity: 1.0, eval: (a, b) => b ** (1.0 /. a)},
 |];
+
+let eval_op = (op, f) =>
+  switch (Belt.Array.getBy(operators, ({name}) => name == op)) {
+  | Some(def) => f(def)
+  | None =>
+    raise(
+      Js.Exn.raiseReferenceError(
+        {j|Operator ($op) is not defined in the current scope|j},
+      ),
+    )
+  };
+
+let global_scope = {
+  Belt.Map.(
+    make(~id=(module Closure))
+    ->set("e", Js.Math._E)
+    ->set("p", Js.Math._PI)
+    ->set("R", 8.31)
+  );
+};
 
 /**Converts a function definition (string) to a function expression
  * ```reason
